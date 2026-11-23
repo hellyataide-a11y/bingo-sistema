@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bingo Sistema - Definitivo</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}body{margin:0;background:#0f3d2e;color:#fff;padding:0}
+.top{background:#0f3d2e;padding:16px;text-align:center;position:sticky;top:0;z-index:10}
+.top h1{margin:0;font-size:22px}.top p{margin:4px 0 0;color:#FFD700}
+.menu{display:flex;gap:6px;overflow-x:auto;padding:10px;background:#0a2e22}
+.menu button{white-space:nowrap;padding:10px 14px;border:none;border-radius:20px;background:#fff;color:#111;font-weight:bold;cursor:pointer}
+.menu button.ativo{background:#FFD700}
+.wrap{max-width:480px;margin:auto;padding:12px}
+.card{background:#fff;color:#111;border-radius:16px;padding:16px;margin-bottom:12px}
+.card h2{margin:0 0 8px}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.num{padding:16px 0;text-align:center;border-radius:10px;border:1px solid #ddd;font-weight:bold;cursor:pointer;background:#fff;font-size:18px}
+.num.marcado{background:#00C853;color:#fff}
+.num.falta{background:#FFF3CD}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;background:#00C853;color:#fff;font-weight:bold;font-size:16px;cursor:pointer;margin-top:8px}
+.btn.gold{background:#FFD700;color:#111}.btn.dark{background:#111}.btn.outline{background:#fff;color:#111;border:2px solid #111}
+input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;margin:6px 0}
+.bola{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#FFE27A,#FFD700,#B8860B);display:flex;align-items:center;justify-content:center;font-size:70px;font-weight:bold;color:#111;margin:10px auto;box-shadow:0 5px 20px rgba(0,0,0,.3)}
+.telao{background:#000;color:#fff;text-align:center;padding:20px;border-radius:16px}.telao .big{font-size:130px;color:#FFD700;font-weight:bold;line-height:1}
+.alerta{background:#FFD700;color:#111;padding:14px;border-radius:12px;text-align:center;font-weight:bold;margin-top:10px}
+.badge{display:inline-block;background:#E8F5E9;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:8px;border-bottom:1px solid #eee;text-align:left}
+small{color:#666}
+</style>
+</head>
+<body>
+<div class="top"><h1>🎱 BINGO SISTEMA</h1><p>Definitivo • Loja + Admin + Sorteio + Comprador + Telão</p></div>
+<div class="menu">
+<button onclick="show('loja')" id="b-loja" class="ativo">🛒 Loja</button>
+<button onclick="show('admin')" id="b-admin">👨‍💼 Admin</button>
+<button onclick="show('comprador')" id="b-comprador">🎫 Meu Bingo</button>
+<button onclick="show('sorteio')" id="b-sorteio">🎱 Sorteio</button>
+<button onclick="show('telao')" id="b-telao">📺 Telão</button>
+<button onclick="show('vendedor')" id="b-vendedor">💰 Vendedor</button>
+</div>
+<div class="wrap">
+
+<!-- LOJA -->
+<div id="loja" class="card">
+<h2>🛒 Loja - Cartela Pronta</h2>
+<p><span class="badge">75 e 90 bolas</span> <span class="badge">PDF na hora</span></p>
+<label>Modelo</label><select id="modelo"><option>Clássica Ouro</option><option>Clássica Prata</option><option>Festa Junina</option><option>Igreja</option><option>Neon</option><option>Dia das Mães</option></select>
+<label>Quantidade</label><select id="qtd"><option value="100">100 cartelas - R$ 29,90</option><option value="500">500 - R$ 79,90</option><option value="1000" selected>1000 - R$ 129,90</option><option value="5000">5000 - R$ 399,90</option><option value="10000">10000 - R$ 699,90</option></select>
+<label>Tipo</label><select id="tipoLoja"><option value="75">75 bolas - 5x5 BINGO</option><option value="90">90 bolas - 3x9</option></select>
+<label>Nome do evento</label><input id="nomeEvento" value="Bingo da Igreja São José">
+<label>Data</label><input type="date" id="dataEvento">
+<button class="btn" onclick="comprar()">Comprar com Pix - Baixar PDF</button>
+<p id="resLoja"></p>
+<div style="background:#FFF8E1;padding:12px;border-radius:12px"><b>Depois da compra:</b><br>Você comprou 1000 por R$ 129,90. Quer assinar o 10K e gerenciar tudo? <button class="btn gold" onclick="alert('Plano 10K - R$ 199,90/mês - Assinatura ativada no TESTE!')">Assinar 10K - R$ 199,90/mês</button></div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="card" style="display:none">
+<h2>👨‍💼 Admin do Organizador</h2>
+<p><b>Plano 10K</b> | Gerenciadas: <b id="gerenciadas">0</b>/10000 | Restam: <b id="restam">10000</b></p>
+<div style="background:#E8F5E9;padding:10px;border-radius:10px"><b>Caixa:</b> <span id="relatorio">Vendido R$ 0 | Prêmios R$ 0 | Comissão R$ 0 | Lucro R$ 0</span></div>
+<h3>Evento</h3>
+<p>Quadra: <button onclick="toggle(this)">ON R$ 50</button> Quina: <button onclick="toggle(this)">ON R$ 150</button> Bingo: R$ 1000 | Giros: 3</p>
+<button class="btn gold" onclick="gerar()">Gerar 1000 Cartelas</button>
+<button class="btn dark" onclick="baixarCSV()">Baixar CSV pro Corel</button>
+<p id="resGerar"></p>
+<h3>Vendedores</h3>
+<input id="nomeVend" placeholder="Nome"><input id="comVend" type="number" value="10" placeholder="Comissão %">
+<button class="btn dark" onclick="addVend()">+ Novo Vendedor</button>
+<div id="listaVend"><p>João - 10% - Vendeu R$ 0 - A receber R$ 0 <button onclick="alert('Comissão marcada como paga!')">Pagar</button></p><p>Maria - 15% - Vendeu R$ 0 - A receber R$ 0 <button onclick="alert('Comissão marcada como paga!')">Pagar</button></p></div>
+<h3>Prêmios</h3>
+<input id="nomePremio" placeholder="Pix R$ 1000, Air Fryer">
+<select id="tipoPremio"><option>Pix</option><option>Dinheiro</option><option>Produto</option><option>Vale</option><option>Brinde</option></select>
+<input id="valorPremio" type="number" placeholder="Valor R$">
+<select id="lugarPremio"><option>Bingo</option><option>Quadra</option><option>Quina</option><option>Giro da Sorte 1</option><option>Giro da Sorte 2</option></select>
+<input id="patroc" placeholder="Patrocinador">
+<button class="btn dark" onclick="addPremio()">Cadastrar Prêmio</button>
+<div id="listaPremios"></div>
+<h3>Contatos</h3>
+<button class="btn outline" onclick="alert('WhatsApp em massa enviado: Bingo hoje às 20h para 124 contatos!')">Mandar WhatsApp em massa: Bingo hoje às 20h</button>
+</div>
+
+<!-- COMPRADOR -->
+<div id="comprador" class="card" style="display:none">
+<h2>🎫 Meu Bingo - App do Comprador</h2>
+<button class="btn dark" onclick="escanear()">📷 Escanear cartela física</button>
+<p>Cartela: <b id="numCartela">0452</b> | Evento: <span id="nomeEv">Bingo da Igreja São José</span></p>
+<p>Modo: <button onclick="setModo('automatico')">Automático</button> <button onclick="setModo('manual')">Manual</button> | <b id="modoAtual">automatico</b></p>
+<p>Última bola: <b id="ultimaC" style="font-size:32px">-</b></p>
+<p id="falta">Faltam 25 pro BINGO</p>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center;font-weight:bold;color:#888"><div>B</div><div>I</div><div>N</div><div>G</div><div>O</div></div>
+<div class="grid" id="gridC"></div>
+<div id="alertaG" style="display:none" class="alerta">🎉 VOCÊ FEZ BINGO!<br><button class="btn" onclick="reivindicar()">Reivindicar Prêmio</button></div>
+<p id="resReiv"></p>
+<h3>Minhas Cartelas</h3><p>0452 (essa) • 0453 • 0454</p>
+<h3>Meus Prêmios</h3><p id="meusPremios">Nenhum ainda</p>
+<button class="btn gold" onclick="show('loja')">Comprar Mais Cartelas</button>
+</div>
+
+<!-- SORTEIO -->
+<div id="sorteio" class="card" style="display:none">
+<h2>🎱 Sorteio ao Vivo</h2>
+<div class="bola" id="bolaG">?</div>
+<p id="statusS">Sorteio liberado</p>
+<button class="btn" onclick="sortear()">SORTEAR BOLA</button>
+<button class="btn gold" onclick="auto()">Automático a cada 3s</button>
+<button class="btn dark" onclick="giro()">🎡 GIRO DA SORTE</button>
+<p><b>Histórico:</b> <span id="hist"></span></p>
+<p><b>Radar:</b> <span id="radar">Nenhuma cartela perto ainda</span></p>
+<div id="alertaS" style="display:none" class="alerta"></div>
+<button class="btn dark" onclick="confirmar()">Confirmar Prêmio / Destravar</button>
+</div>
+
+<!-- TELAO -->
+<div id="telao" class="card" style="display:none">
+<div class="telao"><h2>BINGO DA IGREJA SÃO JOSÉ</h2><div class="big" id="bigT">?</div><p>Última bola: <span id="ultT">-</span> | Bolas: <span id="histT"></span></p><p>Próximo prêmio: Pix R$ 1000 - Patrocínio: Mercadinho São José</p><p id="msgT">Aguardando sorteio...</p></div>
+</div>
+
+<!-- VENDEDOR -->
+<div id="vendedor" class="card" style="display:none">
+<h2>💰 Painel do Vendedor</h2>
+<p><b>João</b> - Comissão 10%</p>
+<table><tr><th>Cartela</th><th>Comprador</th><th>Valor</th><th>Comissão</th></tr><tr><td>0452</td><td>Maria</td><td>R$ 10</td><td>R$ 1,00</td></tr><tr><td>0453</td><td>José</td><td>R$ 10</td><td>R$ 1,00</td></tr></table>
+<p><b>Total vendido:</b> R$ 20 | <b>A receber:</b> R$ 2,00 | <b>Já pago:</b> R$ 0</p>
+<button class="btn" onclick="alert('Link WhatsApp copiado: https://wa.me/55989XXXXXXX?text=Quero+comprar+cartela')">Copiar Link de Venda WhatsApp</button>
+</div>
+
+</div>
+<script>
+let cartela=[],bolas=[],travado=false,modo='automatico',vendido=0;
+function gerarFaixa(a,b,q){let n=[];while(n.length<q){let v=Math.floor(Math.random()*(b-a+1))+a;if(!n.includes(v))n.push(v)}return n}
+function novaCartela(){return [...gerarFaixa(1,15,5),...gerarFaixa(16,30,5),...gerarFaixa(31,45,5),...gerarFaixa(46,60,5),...gerarFaixa(61,75,5)]}
+function show(id){['loja','admin','comprador','sorteio','telao','vendedor'].forEach(x=>{document.getElementById(x).style.display=x===id?'block':'none';document.getElementById('b-'+x).className=x===id?'ativo':''})}
+function toggle(b){b.innerText=b.innerText.includes('ON')?b.innerText.replace('ON','OFF'):b.innerText.replace('OFF','ON')}
+function setModo(m){modo=m;document.getElementById('modoAtual').innerText=m;render()}
+function escanear(){cartela=novaCartela();document.getElementById('numCartela').innerText='0'+Math.floor(Math.random()*900+100);render();alert('QR Code lido! Cartela entrou no app.')}
+function render(){let g=document.getElementById('gridC');g.innerHTML='';cartela.forEach(n=>{let d=document.createElement('div');d.className='num'+(bolas.includes(n)?' marcado':'');d.innerText=n;d.onclick=()=>{if(modo!=='manual')return;bolas=bolas.includes(n)?bolas.filter(x=>x!==n):[...bolas,n];render();falta()};g.appendChild(d)});falta()}
+function falta(){if(!cartela.length)return;let f=cartela.filter(n=>!bolas.includes(n)).length;document.getElementById('falta').innerText=`Faltam ${f} pro BINGO | Faltam ${Math.max(0,f-21)} pra QUADRA | Faltam ${Math.max(0,f-20)} pra QUINA`;document.getElementById('alertaG').style.display=f===0?'block':'none'}
+function reivindicar(){document.getElementById('resReiv').innerText='✅ Reivindicado! Organizador avisado por App + WhatsApp + SMS.';document.getElementById('meusPremios').innerText='Bingo - Pix R$ 1000 - Pendente';alert('Avisos enviados: App + WhatsApp + SMS')}
+function comprar(){let q=document.getElementById('qtd').value;let p={100:29.90,500:79.90,1000:129.90,5000:399.90,10000:699.90};vendido+=p[q];document.getElementById('resLoja').innerHTML=`✅ Compra TESTE! ${document.getElementById('modelo').value} - ${q} cartelas - ${document.getElementById('tipoLoja').value} bolas<br>Valor R$ ${p[q]} - Pix: 00020126580014BR.GOV.BCB.PIX TESTE<br><b>PDF gerado - 4 por folha A4</b>`;document.getElementById('relatorio').innerText=`Vendido R$ ${vendido} | Prêmios R$ 1000 | Comissão R$ ${(vendido*0.1).toFixed(2)} | Lucro R$ ${(vendido-1000-vendido*0.1).toFixed(2)}`}
+function gerar(){cartela=novaCartela();document.getElementById('gerenciadas').innerText=1000;document.getElementById('restam').innerText=9000;document.getElementById('resGerar').innerText='✅ 1000 cartelas geradas com QR Code!';render()}
+function baixarCSV(){let csv='numero_cartela,numeros,codigo\n';for(let i=1;i<=5;i++)csv+=`${String(i).padStart(4,'0')},"${novaCartela().join(';')}",BINGO-${i}\n`;let b=new Blob([csv],{type:'text/csv'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='cartelas-corel.csv';a.click();alert('CSV baixado!')}
+function addVend(){let n=document.getElementById('nomeVend').value||'Novo';let c=document.getElementById('comVend').value||10;document.getElementById('listaVend').innerHTML+=`<p>${n} - ${c}% - Vendeu R$ 0 - A receber R$ 0</p>`}
+function addPremio(){let n=document.getElementById('nomePremio').value||'Prêmio';let t=document.getElementById('tipoPremio').value;let v=document.getElementById('valorPremio').value||0;let l=document.getElementById('lugarPremio').value;let p=document.getElementById('patroc').value||'Sem patrocinador';document.getElementById('listaPremios').innerHTML+=`<p>${l} - ${n} - R$ ${v} - ${t} - ${p}</p>`}
+function sortear(){if(travado){alert('Travado! Confirme o prêmio.');return}if(bolas.length>=75){alert('Acabou!');return}let n;do{n=Math.floor(Math.random()*75)+1}while(bolas.includes(n));bolas.push(n);document.getElementById('bolaG').innerText=n;document.getElementById('ultimaC').innerText=n;document.getElementById('bigT').innerText=n;document.getElementById('ultT').innerText=n;document.getElementById('hist').innerText=bolas.join(', ');document.getElementById('histT').innerText=bolas.join(', ');if(cartela.length){let f=cartela.filter(x=>!bolas.includes(x)).length;document.getElementById('radar').innerText=f<=2?`🔥 Sua cartela a ${f} do BINGO!`:`${f} faltam pro Bingo`;if(f===0){travado=true;document.getElementById('statusS').innerText='TRAVADO - Confirme o prêmio!';document.getElementById('alertaS').style.display='block';document.getElementById('alertaS').innerText='🎉 BINGO! Cartela '+document.getElementById('numCartela').innerText+' - R$ 1000';document.getElementById('msgT').innerText='🎉 BINGO! Cartela '+document.getElementById('numCartela').innerText+' - R$ 1000';alert('🎉 BINGO! Aviso App + WhatsApp + SMS enviado!')}}if(modo==='automatico')render()}
+function auto(){setInterval(sortear,3000);alert('Automático ligado!')}
+function giro(){let num=Math.floor(Math.random()*1000)+1;alert(`🎡 Giro da Sorte! Cartela ${String(num).padStart(4,'0')} ganhou!`);document.getElementById('msgT').innerText=`🎡 Giro! Cartela ${String(num).padStart(4,'0')} ganhou!`}
+function confirmar(){travado=false;document.getElementById('statusS').innerText='Liberado - Prêmio confirmado';document.getElementById('alertaS').style.display='none';alert('Prêmio confirmado!')}
+cartela=novaCartela();render();
+</script>
+</body>
+</html>
