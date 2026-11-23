@@ -3,129 +3,275 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bingo Sistema - Completo</title>
+<title>Bingo Sistema - Admin / Assinante / Cliente</title>
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#0f172a;color:#fff;padding:12px;padding-bottom:80px}
-h1{text-align:center;color:#facc15;margin:5px 0}
+body{margin:0;background:#0f172a;color:#fff;padding:12px;padding-bottom:60px}
+h1{text-align:center;color:#facc15;margin:5px 0;font-size:24px}
 .sub{text-align:center;color:#cbd5e1;font-size:13px;margin-bottom:12px}
-.tabs{display:flex;gap:6px;max-width:750px;margin:0 auto 12px}
-.tabs button{flex:1;padding:12px;border:0;border-radius:10px;background:#334155;color:#fff;font-weight:bold;cursor:pointer}
-.tabs button.ativo{background:#facc15;color:#111}
-.card{background:#1e293b;border-radius:16px;padding:15px;max-width:750px;margin:0 auto 12px;display:none}
+.card{background:#1e293b;border-radius:16px;padding:15px;max-width:1100px;margin:0 auto 12px;display:none}
 .card.ativo{display:block}
 input,select{width:100%;padding:12px;border-radius:10px;border:0;margin-top:6px;font-size:15px}
-button.btn{width:100%;padding:13px;border:0;border-radius:10px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:8px}
+button.btn{width:100%;padding:13px;border:0;border-radius:10px;font-weight:bold;font-size:15px;cursor:pointer;margin-top:8px}
 .amarelo{background:#facc15;color:#111}.verde{background:#22c55e;color:#fff}.vermelho{background:#ef4444;color:#fff}.azul{background:#3b82f6;color:#fff}.cinza{background:#475569;color:#fff}
-#bola{font-size:85px;font-weight:900;background:#facc15;color:#111;width:140px;height:140px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:10px auto}
-.grid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:10px}
+.tabs{display:flex;gap:6px;max-width:1100px;margin:0 auto 12px;flex-wrap:wrap}
+.tabs button{flex:1;padding:11px;border:0;border-radius:10px;background:#334155;color:#fff;font-weight:bold;cursor:pointer;min-width:110px}
+.tabs button.ativo{background:#facc15;color:#111}
+#bola{font-size:80px;font-weight:900;background:#facc15;color:#111;width:135px;height:135px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:10px auto}
+.grid{display:grid;grid-template-columns:repeat(15,1fr);gap:5px;margin-top:10px}
 .num{background:#334155;padding:9px 0;border-radius:7px;text-align:center;font-weight:bold;font-size:13px}
 .num.saiu{background:#facc15;color:#111}
 table{width:100%;border-collapse:collapse;margin-top:10px;background:#fff;color:#111;border-radius:10px;overflow:hidden}
 th,td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:13px}
 th{background:#facc15;color:#111}
 .excluir{background:#ef4444;color:#fff;border:0;padding:6px 9px;border-radius:6px;cursor:pointer}
-.cartelas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.cartelas{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
 .cartela{background:#fff;color:#111;border-radius:12px;padding:10px;text-align:center}
 .cartela table{margin:0}.cartela td{text-align:center}
 .cartela td.marcado{background:#facc15}
 .badge{background:#facc15;color:#111;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:bold}
 .hist{color:#cbd5e1;font-size:13px;margin-top:8px;word-break:break-word}
+.topo{display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto 10px;background:#1e293b;padding:10px 12px;border-radius:12px;font-size:13px}
+/* ===== RESPONSIVO ===== */
+@media (min-width:768px){body{padding:20px}h1{font-size:32px}.cartelas{grid-template-columns:repeat(3,1fr)}#bola{width:160px;height:160px;font-size:100px}.card{padding:20px}}
+@media (min-width:1100px){.cartelas{grid-template-columns:repeat(4,1fr)}}
+@media (min-width:600px) and (max-width:767px){.cartelas{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(10,1fr)}}
+@media (max-width:599px){body{padding:8px}h1{font-size:22px}.tabs{flex-direction:column}.tabs button{width:100%;min-width:100%}.grid{grid-template-columns:repeat(5,1fr)}.cartelas{grid-template-columns:1fr}#bola{width:120px;height:120px;font-size:70px}.topo{flex-direction:column;gap:8px;text-align:center}}
 </style>
 </head>
 <body>
 <h1>🎱 BINGO SISTEMA</h1>
-<div class="sub">Painel Completo • Assinantes • Banco de Dados • CSV</div>
+<div class="sub">Admin • Assinante • Cliente</div>
+<div id="avisoAparelho" style="max-width:1100px;margin:0 auto 10px;background:#facc15;color:#111;padding:10px 12px;border-radius:12px;font-weight:bold;text-align:center;font-size:14px">Detectando seu aparelho...</div>
 
-<div class="tabs">
-<button id="tab-sorteio" class="ativo" onclick="mostrar('sorteio')">🎲 Sorteio</button>
-<button id="tab-assinantes" onclick="mostrar('assinantes')">👥 Assinantes</button>
-<button id="tab-cartelas" onclick="mostrar('cartelas')">🎫 Cartelas</button>
-<button id="tab-csv" onclick="mostrar('csv')">📄 CSV / Banco</button>
+<div id="tela-login" class="card ativo">
+<h3>🔐 Entrar</h3>
+<select id="loginTipo"><option value="admin">Sou ADMIN (dono do sistema)</option><option value="assinante">Sou ASSINANTE (faço o bingo)</option><option value="cliente">Sou CLIENTE (comprei cartela)</option></select>
+<input id="loginEmail" placeholder="E-mail ou WhatsApp">
+<input id="loginSenha" type="password" placeholder="Senha">
+<button class="btn amarelo" onclick="login()">ENTRAR</button>
+<hr style="border-color:#334155;margin:14px 0">
+<h3>📝 Cadastrar Novo Usuário</h3>
+<input id="cadNome" placeholder="Nome completo *">
+<input id="cadEmail" placeholder="E-mail ou WhatsApp *">
+<input id="cadSenha" type="password" placeholder="Crie uma senha *">
+<select id="cadTipo"><option value="admin">Quero ser ADMIN</option><option value="assinante">Quero ser ASSINANTE - vou fazer bingo</option><option value="cliente">Quero ser CLIENTE - comprei cartela</option></select>
+<input id="cadCodigoAssinante" placeholder="Se for CLIENTE, código do seu Assinante (ex: ASSIN-001) - opcional">
+<button class="btn verde" onclick="cadastrar()">✅ CRIAR MINHA CONTA</button>
+<p style="font-size:12px;color:#94a3b8">Teste: Admin - Email: <b>admin@teste</b> Senha: <b>123</b></p>
 </div>
 
-<!-- SORTEIO -->
-<div id="sorteio" class="card ativo">
+<div id="topoLogado" class="topo" style="display:none">
+<span id="infoUsuario"></span>
+<button onclick="sair()" style="background:#ef4444;color:#fff;border:0;padding:7px 12px;border-radius:8px;font-weight:bold;cursor:pointer">Sair</button>
+</div>
+
+<div id="area-admin" class="card">
+<h3>👑 Painel do ADMIN</h3>
+<p class="hist" id="resumoAdmin"></p>
+<input id="buscaAdmin" placeholder="🔍 Buscar assinante..." oninput="listarAdmin()">
+<div id="listaAdmin"></div>
+<button class="btn azul" onclick="exportarAssinantesCSV()">📥 Baixar Todos - CSV</button>
+<button class="btn cinza" onclick="exportarBackup()">💾 Backup Completo</button>
+</div>
+
+<div id="area-assinante" class="card">
+<div class="tabs">
+<button id="t-sorteio" class="ativo" onclick="mostrarAbaAssinante('sorteio')">🎲 Sorteio</button>
+<button id="t-clientes" onclick="mostrarAbaAssinante('clientes')">👥 Meus Clientes</button>
+<button id="t-cartelas" onclick="mostrarAbaAssinante('cartelas')">🎫 Cartelas</button>
+<button id="t-csv" onclick="mostrarAbaAssinante('csv')">📄 CSV</button>
+</div>
+<div id="aba-sorteio">
 <div style="text-align:center"><span id="letra" class="badge">Clique em SORTEAR</span><div id="bola">?</div><div id="contador">Sorteadas: 0 / 75</div></div>
 <button class="btn amarelo" onclick="sortear()">🎲 SORTEAR BOLA</button>
 <button class="btn vermelho" onclick="reiniciar()">🔄 REINICIAR JOGO</button>
 <div class="hist" id="historico"></div>
 <div class="grid" id="painel"></div>
 </div>
-
-<!-- ASSINANTES -->
-<div id="assinantes" class="card">
-<h3>👥 Painel do Assinante</h3>
-<p style="font-size:13px;color:#cbd5e1">Total: <b id="totalAssinantes">0</b> assinantes salvos no banco</p>
-<input id="nome" placeholder="Nome completo *">
-<input id="telefone" placeholder="WhatsApp / Telefone">
-<input id="cidade" placeholder="Cidade">
-<select id="plano"><option value="Mensal - R$ 20">Plano Mensal - R$ 20</option><option value="Semanal - R$ 10">Plano Semanal - R$ 10</option><option value="VIP - R$ 50">Plano VIP - R$ 50</option><option value="Gratuito">Gratuito / Teste</option></select>
-<button class="btn verde" onclick="salvarAssinante()">✅ SALVAR ASSINANTE</button>
-<input id="busca" placeholder="🔍 Buscar por nome ou telefone..." oninput="listarAssinantes()">
-<div id="listaAssinantes"></div>
+<div id="aba-clientes" style="display:none">
+<h3>👥 Meus Clientes</h3>
+<input id="cliNome" placeholder="Nome do cliente *">
+<input id="cliFone" placeholder="WhatsApp do cliente">
+<input id="cliCartela" placeholder="Código da cartela vendida (ex: BINGO-0001)">
+<button class="btn verde" onclick="salvarCliente()">✅ SALVAR CLIENTE + VINCULAR CARTELA</button>
+<input id="buscaCli" placeholder="🔍 Buscar cliente..." oninput="listarClientes()">
+<div id="listaClientes"></div>
 </div>
-
-<!-- CARTELAS -->
-<div id="cartelas" class="card">
-<h3>🎫 Gerador de Cartelas</h3>
-<label>Quantas cartelas?</label>
-<select id="qtdCartelas"><option value="2">2 Cartelas</option><option value="6">6 Cartelas</option><option value="10">10 Cartelas</option><option value="20">20 Cartelas</option><option value="50">50 Cartelas</option></select>
+<div id="aba-cartelas" style="display:none">
+<h3>🎫 Gerar Cartelas</h3>
+<label>Quantas? (até 1000)</label>
+<input type="number" id="qtdCartelas" value="10" min="1" max="1000">
 <button class="btn verde" onclick="gerarCartelas()">+ GERAR CARTELAS</button>
-<button class="btn azul" onclick="exportarCartelasCSV()">📄 Baixar Cartelas em CSV</button>
+<button class="btn azul" onclick="exportarCartelasCSV()">📄 Baixar Cartelas - CSV (B1..O5)</button>
 <div class="cartelas" id="areaCartelas"></div>
 </div>
+<div id="aba-csv" style="display:none">
+<h3>📄 Meus Dados / CSV</h3>
+<button class="btn azul" onclick="exportarClientesCSV()">📥 Baixar Meus Clientes - CSV</button>
+<button class="btn azul" onclick="exportarSorteioCSV()">📥 Baixar Sorteio - CSV</button>
+<p class="hist" id="statusBanco"></p>
+</div>
+</div>
 
-<!-- CSV / BANCO -->
-<div id="csv" class="card">
-<h3>📄 Banco de Dados & CSV</h3>
-<p style="font-size:13px;color:#cbd5e1">Tudo fica salvo no navegador (localStorage). Você pode exportar e abrir no Excel / Google Planilhas.</p>
-<button class="btn azul" onclick="exportarAssinantesCSV()">📥 BAIXAR ASSINANTES - CSV</button>
-<button class="btn azul" onclick="exportarSorteioCSV()">📥 BAIXAR SORTEIO - CSV</button>
-<button class="btn cinza" onclick="exportarBackup()">💾 BAIXAR BACKUP COMPLETO (JSON)</button>
-<label style="font-size:13px">Importar CSV de assinantes (nome,telefone,cidade,plano):</label>
-<input type="file" id="fileCSV" accept=".csv" onchange="importarCSV(event)">
-<button class="btn vermelho" onclick="limparBanco()">🗑️ LIMPAR TODO O BANCO</button>
-<div class="hist" id="statusBanco"></div>
+<div id="area-cliente" class="card">
+<h3>🎫 Área do Cliente</h3>
+<p class="hist" id="infoCliente"></p>
+<label>Digite o código da sua cartela:</label>
+<input id="codigoCliente" placeholder="Ex: BINGO-0001">
+<button class="btn amarelo" onclick="buscarMinhaCartela()">🔍 VER MINHA CARTELA</button>
+<div id="minhaCartelaArea"></div>
+<h3 style="margin-top:16px">🎲 Bolas já sorteadas</h3>
+<div class="grid" id="painelCliente"></div>
+<div class="hist" id="historicoCliente"></div>
 </div>
 
 <script>
-// BANCO
-let assinantes = JSON.parse(localStorage.getItem('bingo_assinantes')||'[]');
+let usuarios = JSON.parse(localStorage.getItem('bingo_usuarios')||'[]');
+let clientes = JSON.parse(localStorage.getItem('bingo_clientes')||'[]');
 let sorteadas = JSON.parse(localStorage.getItem('bingo_sorteadas')||'[]');
 let cartelasGeradas = [];
-function salvarBanco(){localStorage.setItem('bingo_assinantes',JSON.stringify(assinantes));localStorage.setItem('bingo_sorteadas',JSON.stringify(sorteadas));atualizarStatus();}
-function mostrar(id){document.querySelectorAll('.card').forEach(c=>c.classList.remove('ativo'));document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('ativo'));document.getElementById(id).classList.add('ativo');document.getElementById('tab-'+id).classList.add('ativo');}
-// PAINEL 1-75
+let usuarioLogado = JSON.parse(localStorage.getItem('bingo_logado')||'null');
+function salvar(){localStorage.setItem('bingo_usuarios',JSON.stringify(usuarios));localStorage.setItem('bingo_clientes',JSON.stringify(clientes));localStorage.setItem('bingo_sorteadas',JSON.stringify(sorteadas));localStorage.setItem('bingo_logado',JSON.stringify(usuarioLogado));}
+function cadastrar(){
+  let nome=document.getElementById('cadNome').value.trim();
+  let email=document.getElementById('cadEmail').value.trim().toLowerCase();
+  let senha=document.getElementById('cadSenha').value;
+  let tipo=document.getElementById('cadTipo').value;
+  let cod=document.getElementById('cadCodigoAssinante').value.trim();
+  if(!nome||!email||!senha){alert('Preencha nome, e-mail e senha');return;}
+  if(usuarios.find(u=>u.email===email && u.tipo===tipo)){alert('Já existe essa conta. Faça login.');return;}
+  let codigoProprio = tipo==='assinante' ? 'ASSIN-'+String(usuarios.filter(u=>u.tipo==='assinante').length+1).padStart(3,'0') : '';
+  usuarios.push({nome,email,senha,tipo,codigoProprio,codigoAssinante:cod});
+  salvar(); alert('Conta criada! Tipo: '+tipo+(codigoProprio?' | Seu código de Assinante: '+codigoProprio+' - passe para seus clientes':'')+' Agora faça login.');
+}
+function login(){
+  let tipo=document.getElementById('loginTipo').value;
+  let email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  let senha=document.getElementById('loginSenha').value;
+  if(email==='admin@teste' && senha==='123' && !usuarios.find(u=>u.email==='admin@teste')){
+    usuarios.push({nome:'Admin Teste',email:'admin@teste',senha:'123',tipo:'admin',codigoProprio:'ADMIN-001'}); salvar();
+  }
+  let u=usuarios.find(x=>x.email===email && x.senha===senha && x.tipo===tipo);
+  if(!u){alert('Login errado. Verifique tipo, e-mail e senha. Ou cadastre-se abaixo.');return;}
+  usuarioLogado=u; salvar(); mostrarArea();
+}
+function sair(){usuarioLogado=null; salvar(); location.reload();}
+function mostrarArea(){
+  if(!usuarioLogado){document.getElementById('tela-login').classList.add('ativo');return;}
+  document.getElementById('tela-login').classList.remove('ativo');
+  document.getElementById('topoLogado').style.display='flex';
+  document.getElementById('infoUsuario').innerHTML='<b>'+usuarioLogado.nome+'</b> • '+usuarioLogado.tipo.toUpperCase()+(usuarioLogado.codigoProprio?' • Seu código: <b>'+usuarioLogado.codigoProprio+'</b>':'')+' • '+usuarioLogado.email;
+  document.getElementById('area-admin').classList.remove('ativo');
+  document.getElementById('area-assinante').classList.remove('ativo');
+  document.getElementById('area-cliente').classList.remove('ativo');
+  if(usuarioLogado.tipo==='admin'){document.getElementById('area-admin').classList.add('ativo'); listarAdmin();}
+  if(usuarioLogado.tipo==='assinante'){document.getElementById('area-assinante').classList.add('ativo'); listarClientes();}
+  if(usuarioLogado.tipo==='cliente'){document.getElementById('area-cliente').classList.add('ativo'); document.getElementById('infoCliente').innerHTML='Olá <b>'+usuarioLogado.nome+'</b>, vinculado ao assinante código: <b>'+(usuarioLogado.codigoAssinante||'não informado')+'</b>. Digite o código da sua cartela abaixo.'; atualizarPainelCliente();}
+}
+function mostrarAbaAssinante(id){
+  ['sorteio','clientes','cartelas','csv'].forEach(a=>{document.getElementById('aba-'+a).style.display = a===id?'block':'none'; document.getElementById('t-'+a).classList.toggle('ativo', a===id);});
+}
+function listarAdmin(){
+  let busca=(document.getElementById('buscaAdmin').value||'').toLowerCase();
+  let ass=usuarios.filter(u=>u.tipo==='assinante');
+  let cli=usuarios.filter(u=>u.tipo==='cliente');
+  document.getElementById('resumoAdmin').innerHTML='Total Assinantes: <b>'+ass.length+'</b> • Total Clientes: <b>'+cli.length+'</b> • Clientes com cartela: <b>'+clientes.length+'</b>';
+  let html='<table><tr><th>Assinante</th><th>Código</th><th>E-mail</th><th>Clientes dele</th><th></th></tr>';
+  ass.filter(a=>a.nome.toLowerCase().includes(busca)||a.email.includes(busca)).forEach(a=>{
+    let qtd=clientes.filter(c=>c.dono===a.email).length;
+    html+='<tr><td>'+a.nome+'</td><td><b>'+a.codigoProprio+'</b></td><td>'+a.email+'</td><td>'+qtd+'</td><td><button class="excluir" onclick="excluirUsuario(\''+a.email+'\')">X</button></td></tr>';
+  });
+  html+='</table>'; document.getElementById('listaAdmin').innerHTML=html;
+}
+function excluirUsuario(email){if(!confirm('Excluir?'))return; usuarios=usuarios.filter(u=>u.email!==email); salvar(); listarAdmin();}
+function salvarCliente(){
+  if(!usuarioLogado) return;
+  let nome=document.getElementById('cliNome').value.trim();
+  let fone=document.getElementById('cliFone').value.trim();
+  let cartela=document.getElementById('cliCartela').value.trim().toUpperCase();
+  if(!nome){alert('Digite o nome do cliente');return;}
+  clientes.push({nome,fone,cartela,dono:usuarioLogado.email,donoNome:usuarioLogado.nome,data:new Date().toLocaleDateString('pt-BR')});
+  salvar(); document.getElementById('cliNome').value='';document.getElementById('cliFone').value='';document.getElementById('cliCartela').value='';
+  listarClientes(); alert('Cliente salvo e vinculado a você!');
+}
+function listarClientes(){
+  let busca=(document.getElementById('buscaCli')?.value||'').toLowerCase();
+  let meus=clientes.filter(c=>c.dono===usuarioLogado?.email);
+  let html='<table><tr><th>Cliente</th><th>WhatsApp</th><th>Cartela</th><th></th></tr>';
+  if(!meus.length) html+='<tr><td colspan="4" style="text-align:center">Nenhum cliente ainda</td></tr>';
+  meus.filter(c=>c.nome.toLowerCase().includes(busca)).forEach((c)=>{
+    let idx=clientes.indexOf(c);
+    html+='<tr><td>'+c.nome+'<br><small>'+c.data+'</small></td><td>'+c.fone+'</td><td><b>'+(c.cartela||'-')+'</b></td><td><button class="excluir" onclick="excluirCliente('+idx+')">X</button></td></tr>';
+  });
+  html+='</table>'; let el=document.getElementById('listaClientes'); if(el) el.innerHTML=html;
+  let st=document.getElementById('statusBanco'); if(st) st.innerHTML='Você tem <b>'+meus.length+' clientes</b> • <b>'+sorteadas.length+' bolas sorteadas</b>';
+}
+function excluirCliente(i){if(!confirm('Excluir cliente?'))return; clientes.splice(i,1); salvar(); listarClientes();}
 let painel=document.getElementById('painel');
 for(let i=1;i<=75;i++){let d=document.createElement('div');d.className='num';d.id='n'+i;d.textContent=i;painel.appendChild(d);}
+let painelC=document.getElementById('painelCliente');
+for(let i=1;i<=75;i++){let d=document.createElement('div');d.className='num';d.id='nc'+i;d.textContent=i;painelC.appendChild(d);}
 function letra(n){if(n<=15)return 'B';if(n<=30)return 'I';if(n<=45)return 'N';if(n<=60)return 'G';return 'O';}
 function atualizarSorteio(){
-document.getElementById('contador').textContent='Sorteadas: '+sorteadas.length+' / 75';
-if(sorteadas.length>0){let u=sorteadas[sorteadas.length-1];document.getElementById('bola').textContent=u;document.getElementById('letra').textContent=letra(u)+' - '+u;}
-document.querySelectorAll('.num').forEach(e=>e.classList.remove('saiu'));sorteadas.forEach(n=>document.getElementById('n'+n).classList.add('saiu'));
-document.getElementById('historico').innerHTML=sorteadas.length?'<b>Histórico:</b> '+sorteadas.map(x=>letra(x)+x).join(' • '):'';
-document.querySelectorAll('.cartela td').forEach(td=>{if(sorteadas.includes(parseInt(td.textContent)))td.classList.add('marcado');});
+  document.getElementById('contador').textContent='Sorteadas: '+sorteadas.length+' / 75';
+  if(sorteadas.length>0){let u=sorteadas[sorteadas.length-1];document.getElementById('bola').textContent=u;document.getElementById('letra').textContent=letra(u)+' - '+u;}
+  document.querySelectorAll('#painel .num').forEach(e=>e.classList.remove('saiu')); sorteadas.forEach(n=>document.getElementById('n'+n).classList.add('saiu'));
+  document.getElementById('historico').innerHTML=sorteadas.length?'<b>Histórico:</b> '+sorteadas.map(x=>letra(x)+x).join(' • '):'';
+  atualizarPainelCliente();
 }
-function sortear(){if(sorteadas.length>=75){alert('Fim do jogo!');return;}let n;do{n=Math.floor(Math.random()*75)+1}while(sorteadas.includes(n));sorteadas.push(n);salvarBanco();atualizarSorteio();}
-function reiniciar(){if(!confirm('Reiniciar o jogo?'))return;sorteadas=[];salvarBanco();document.getElementById('bola').textContent='?';document.getElementById('letra').textContent='Clique em SORTEAR';atualizarSorteio();}
-// ASSINANTES
-function salvarAssinante(){let nome=document.getElementById('nome').value.trim();let tel=document.getElementById('telefone').value.trim();let cid=document.getElementById('cidade').value.trim();let plano=document.getElementById('plano').value;if(!nome){alert('Digite o nome');return;}assinantes.push({nome,telefone:tel,cidade:cid,plano,data:new Date().toLocaleDateString('pt-BR')});salvarBanco();document.getElementById('nome').value='';document.getElementById('telefone').value='';document.getElementById('cidade').value='';listarAssinantes();alert('Assinante salvo!');}
-function listarAssinantes(){let busca=document.getElementById('busca').value.toLowerCase();let filtrados=assinantes.filter(a=>a.nome.toLowerCase().includes(busca)||a.telefone.includes(busca));document.getElementById('totalAssinantes').textContent=assinantes.length;let html='<table><tr><th>Nome</th><th>Telefone</th><th>Plano</th><th></th></tr>';if(!filtrados.length)html+='<tr><td colspan="4" style="text-align:center">Nenhum assinante ainda</td></tr>';filtrados.forEach((a,i)=>{let idx=assinantes.indexOf(a);html+='<tr><td>'+a.nome+'<br><small>'+(a.cidade||'')+' - '+a.data+'</small></td><td>'+a.telefone+'</td><td>'+a.plano+'</td><td><button class="excluir" onclick="excluirAssinante('+idx+')">X</button></td></tr>';});html+='</table>';document.getElementById('listaAssinantes').innerHTML=html;}
-function excluirAssinante(i){if(!confirm('Excluir este assinante?'))return;assinantes.splice(i,1);salvarBanco();listarAssinantes();}
-// CARTELAS
+function atualizarPainelCliente(){
+  document.querySelectorAll('#painelCliente .num').forEach(e=>e.classList.remove('saiu')); sorteadas.forEach(n=>{let el=document.getElementById('nc'+n); if(el) el.classList.add('saiu');});
+  let h=document.getElementById('historicoCliente'); if(h) h.innerHTML=sorteadas.length?'<b>Histórico:</b> '+sorteadas.map(x=>letra(x)+x).join(' • '):'Nenhuma bola sorteada ainda';
+  document.querySelectorAll('#minhaCartelaArea td').forEach(td=>{ if(sorteadas.includes(parseInt(td.dataset.num))) td.classList.add('marcado'); });
+}
+function sortear(){if(sorteadas.length>=75){alert('Fim do jogo!');return;}let n;do{n=Math.floor(Math.random()*75)+1}while(sorteadas.includes(n));sorteadas.push(n);salvar();atualizarSorteio();}
+function reiniciar(){if(!confirm('Reiniciar o jogo?'))return;sorteadas=[];salvar();document.getElementById('bola').textContent='?';document.getElementById('letra').textContent='Clique em SORTEAR';atualizarSorteio();}
 function gerarUmaCartela(){let ranges=[[1,15],[16,30],[31,45],[46,60],[61,75]];let cols=[];for(let c=0;c<5;c++){let nums=[];while(nums.length<5){let v=Math.floor(Math.random()*16)+ranges[c][0];if(!nums.includes(v))nums.push(v);}cols.push(nums);}return cols;}
-function gerarCartelas(){let qtd=parseInt(document.getElementById('qtdCartelas').value);cartelasGeradas=[];let html='';for(let k=0;k<qtd;k++){let cols=gerarUmaCartela();cartelasGeradas.push(cols);html+='<div class="cartela"><b>CARTELA '+(k+1)+'</b><table><tr><td><b>B</b></td><td><b>I</b></td><td><b>N</b></td><td><b>G</b></td><td><b>O</b></td></tr>';for(let r=0;r<5;r++){html+='<tr>';for(let c=0;c<5;c++){if(r===2&&c===2)html+='<td class="marcado">★</td>';else html+='<td>'+cols[c][r]+'</td>';}html+='</tr>';}html+='</table></div>';}document.getElementById('areaCartelas').innerHTML=html;atualizarSorteio();}
-// CSV
+function gerarCartelas(){
+  let qtd=parseInt(document.getElementById('qtdCartelas').value)||10; if(qtd>1000){alert('Máximo 1000');qtd=1000; document.getElementById('qtdCartelas').value=1000;}
+  cartelasGeradas=[]; let html='';
+  for(let k=0;k<qtd;k++){let cols=gerarUmaCartela();cartelasGeradas.push(cols); if(k<20){
+    let codigo='BINGO-'+String(k+1).padStart(4,'0');
+    html+='<div class="cartela"><b>'+codigo+' - CARTELA '+(k+1)+'</b><table><tr><td><b>B</b></td><td><b>I</b></td><td><b>N</b></td><td><b>G</b></td><td><b>O</b></td></tr>';
+    for(let r=0;r<5;r++){html+='<tr>';for(let c=0;c<5;c++){let id=['B','I','N','G','O'][c]+(r+1); if(r===2&&c===2) html+='<td class="marcado"><small>FREE</small><br><b>★</b></td>'; else html+='<td data-num="'+cols[c][r]+'"><small style="color:#888;font-size:9px">'+id+'</small><br><b>'+cols[c][r]+'</b></td>';}html+='</tr>';}
+    html+='</table><small>Código: '+codigo+'</small></div>';
+  }}
+  document.getElementById('areaCartelas').innerHTML=html+'<p style="color:#fff;text-align:center">✅ Geradas <b>'+qtd+' cartelas</b>. Mostrando 20, CSV tem todas.</p>';
+  atualizarSorteio();
+}
+function buscarMinhaCartela(){
+  let cod=document.getElementById('codigoCliente').value.trim().toUpperCase();
+  if(!cod){alert('Digite o código');return;}
+  let num=parseInt(cod.replace(/\D/g,''))||1;
+  let cols = cartelasGeradas[num-1] || gerarUmaCartela();
+  let acertos=0; let html='<div class="cartela" style="max-width:350px;margin:10px auto"><b>SUA CARTELA: '+cod+'</b><table><tr><td><b>B</b></td><td><b>I</b></td><td><b>N</b></td><td><b>G</b></td><td><b>O</b></td></tr>';
+  for(let r=0;r<5;r++){html+='<tr>';for(let c=0;c<5;c++){let id=['B','I','N','G','O'][c]+(r+1); if(r===2&&c===2) html+='<td class="marcado"><small>FREE</small><br><b>★</b></td>'; else {let v=cols[c][r]; let marcado=sorteadas.includes(v); if(marcado) acertos++; html+='<td data-num="'+v+'" class="'+(marcado?'marcado':'')+'"><small style="color:#888;font-size:9px">'+id+'</small><br><b>'+v+'</b></td>';}}html+='</tr>';}
+  html+='</table><p>Você acertou <b>'+acertos+' números</b> '+ (acertos>=15?'🎉 BINGO!':'') +'</p></div>';
+  document.getElementById('minhaCartelaArea').innerHTML=html;
+}
 function baixarCSV(nome,conteudo){let blob=new Blob(['\uFEFF'+conteudo],{type:'text/csv;charset=utf-8'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nome;a.click();}
-function exportarAssinantesCSV(){if(!assinantes.length){alert('Nenhum assinante para exportar');return;}let csv='Nome;Telefone;Cidade;Plano;Data\n';assinantes.forEach(a=>{csv+=a.nome+';'+a.telefone+';'+a.cidade+';'+a.plano+';'+a.data+'\n';});baixarCSV('assinantes_bingo.csv',csv);}
-function exportarSorteioCSV(){let csv='Ordem;Letra;Numero\n';sorteadas.forEach((n,i)=>{csv+=(i+1)+';'+letra(n)+';'+n+'\n';});baixarCSV('sorteio_bingo.csv',csv);}
-function exportarCartelasCSV(){if(!cartelasGeradas.length){alert('Gere as cartelas primeiro');return;}let csv='Cartela;B;I;N;G;O\n';cartelasGeradas.forEach((cols,idx)=>{for(let r=0;r<5;r++){csv+='Cartela '+(idx+1)+';'+cols.map(c=>c[r]).join(';')+'\n';}});baixarCSV('cartelas_bingo.csv',csv);}
-function exportarBackup(){baixarCSV('backup_bingo.json',JSON.stringify({assinantes,sorteadas},null,2));}
-function importarCSV(e){let file=e.target.files[0];if(!file)return;let reader=new FileReader();reader.onload=function(){let linhas=reader.result.split('\n');for(let i=1;i<linhas.length;i++){let p=linhas[i].split(';');if(p[0]&&p[0].trim())assinantes.push({nome:p[0].trim(),telefone:(p[1]||'').trim(),cidade:(p[2]||'').trim(),plano:(p[3]||'Mensal').trim(),data:new Date().toLocaleDateString('pt-BR')});}salvarBanco();listarAssinantes();alert('Importado!');};reader.readAsText(file);}
-function limparBanco(){if(!confirm('Apagar TODOS os assinantes e sorteio?'))return;assinantes=[];sorteadas=[];salvarBanco();listarAssinantes();atualizarSorteio();document.getElementById('bola').textContent='?';}
-function atualizarStatus(){document.getElementById('statusBanco').innerHTML='Banco atual: <b>'+assinantes.length+' assinantes</b> • <b>'+sorteadas.length+' bolas sorteadas</b> • Salvo automaticamente no aparelho.';}
-listarAssinantes();atualizarSorteio();atualizarStatus();gerarCartelas();
+function esc(v){return '"'+String(v||'').replace(/"/g,'""')+'"';}
+function exportarAssinantesCSV(){let csv='Tipo;Nome;Email;CodigoProprio;CodigoAssinante\r\n';usuarios.forEach(u=>{csv+=esc(u.tipo)+';'+esc(u.nome)+';'+esc(u.email)+';'+esc(u.codigoProprio||'')+';'+esc(u.codigoAssinante||'')+'\r\n';});baixarCSV('todos_usuarios.csv',csv);}
+function exportarClientesCSV(){let meus=clientes.filter(c=>c.dono===usuarioLogado?.email); if(!meus.length){alert('Nenhum cliente');return;} let csv='Nome;Telefone;Cartela;Data;Dono\r\n';meus.forEach(c=>{csv+=esc(c.nome)+';'+esc(c.fone)+';'+esc(c.cartela)+';'+esc(c.data)+';'+esc(c.donoNome)+'\r\n';});baixarCSV('meus_clientes.csv',csv);}
+function exportarSorteioCSV(){let csv='Ordem;Letra;Numero\r\n';sorteadas.forEach((n,i)=>{csv+=(i+1)+';'+esc(letra(n))+';'+n+'\r\n';});baixarCSV('sorteio.csv',csv);}
+function exportarCartelasCSV(){if(!cartelasGeradas.length){alert('Gere cartelas primeiro');return;}let csv='CodigoCartela;Cartela;B1;B2;B3;B4;B5;I1;I2;I3;I4;I5;N1;N2;FREE;N4;N5;G1;G2;G3;G4;G5;O1;O2;O3;O4;O5\r\n';cartelasGeradas.forEach((cols,idx)=>{let codigo='BINGO-'+String(idx+1).padStart(4,'0');let linha=codigo+';'+(idx+1)+';';for(let c=0;c<5;c++)for(let r=0;r<5;r++){if(r===2&&c===2)linha+='FREE;';else linha+=cols[c][r]+';';}csv+=linha+'\r\n';});baixarCSV('cartelas_'+cartelasGeradas.length+'.csv',csv);}
+function exportarBackup(){baixarCSV('backup.json',JSON.stringify({usuarios,clientes,sorteadas},null,2));}
+function detectarAparelho(){
+  let w = window.innerWidth;
+  let ua = navigator.userAgent.toLowerCase();
+  let tipo=''; let icone=''; let colunas='';
+  if (/mobile|android|iphone|ipad|ipod/.test(ua) && w < 768) { tipo='CELULAR'; icone='📱'; colunas='1 coluna - modo celular'; }
+  else if (w >= 768 && w < 1100) { tipo='NOTEBOOK / TABLET'; icone='💻'; colunas='2-3 colunas - modo notebook'; }
+  else if (w >= 1100) { tipo='PC / MONITOR GRANDE'; icone='🖥️'; colunas='4 colunas - modo PC'; }
+  else { tipo='TABLET'; icone='📱'; colunas='2 colunas - modo tablet'; }
+  let el = document.getElementById('avisoAparelho');
+  if(el) el.innerHTML = icone+' Você está usando: <b>'+tipo+'</b> • Tela: '+w+'px • '+colunas+' • '+(window.innerHeight > window.innerWidth ? 'Vertical' : 'Horizontal');
+}
+window.addEventListener('resize', detectarAparelho);
+window.addEventListener('orientationchange', ()=>setTimeout(detectarAparelho,300));
+detectarAparelho();
+mostrarArea(); atualizarSorteio(); if(usuarioLogado) listarClientes();
 </script>
 </body>
 </html>
